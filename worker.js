@@ -3,22 +3,31 @@
  *
  * Serves the static MapLibre GL style JSON files from the repo root via the
  * ASSETS binding (configured in wrangler.jsonc). All responses get permissive
- * CORS headers because MapLibre fetches the style cross-origin from the mobile
- * app (custom URL scheme on iOS/Android).
+ * CORS headers because MapLibre fetches the style cross-origin (mobile app
+ * via custom URL scheme, Maputnik web editor for designer iteration).
  */
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
+  "Access-Control-Allow-Headers": "*",
+  "Access-Control-Max-Age": "86400",
+};
+
 export default {
   async fetch(request, env) {
-    const response = await env.ASSETS.fetch(request);
+    // CORS preflight — required by browsers (Maputnik, web debug tools).
+    // Mobile native MapLibre skips preflight, but answering 204 here is cheap.
+    if (request.method === "OPTIONS") {
+      return new Response(null, { status: 204, headers: CORS_HEADERS });
+    }
 
-    // Clone to make headers mutable.
+    const response = await env.ASSETS.fetch(request);
     const headers = new Headers(response.headers);
-    headers.set("Access-Control-Allow-Origin", "*");
-    headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
+
+    for (const [k, v] of Object.entries(CORS_HEADERS)) headers.set(k, v);
     headers.set("Cache-Control", "public, max-age=300, s-maxage=300");
 
-    // Force application/json on .json paths (some CDNs strip it).
-    const url = new URL(request.url);
-    if (url.pathname.endsWith(".json")) {
+    if (new URL(request.url).pathname.endsWith(".json")) {
       headers.set("Content-Type", "application/json; charset=utf-8");
     }
 
