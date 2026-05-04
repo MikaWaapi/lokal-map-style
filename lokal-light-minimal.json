@@ -37,7 +37,7 @@
       "road-highway": "Autoroutes motorway/trunk — blanc pur sur casing miel, contraste max.",
       "boundary-admin": "Limites administratives 4 (département) et 6 (commune) — pointillé inkFaint α40%.",
       "place-suburb": "Quartiers / lieux-dits — Noto Sans Regular, inkSoft, halo sableSoft.",
-      "place-city": "Villes / bourgs — Noto Sans Bold, ink, halo sableSoft (lisibilité max).",
+      "place-city": "Villes / bourgs — Noto Sans Regular, ink, halo sableSoft (lisibilité max). Bold désactivé : OpenFreeMap ne sert que Noto Sans Regular.",
       "road-label": "Noms de rues majeures uniquement (zoom ≥ 14) — Noto Sans Regular 10px, inkSoft."
     }
   },

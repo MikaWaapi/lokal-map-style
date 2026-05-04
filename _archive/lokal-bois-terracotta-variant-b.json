@@ -37,14 +37,13 @@
       "road-highway": "Autoroutes motorway/trunk — terracotta saturé (88%), variante B SANS casing (1 layer en moins vs C).",
       "boundary-admin": "Limites administratives 4 (département) et 6 (commune) — pointillé inkFaint α40%.",
       "place-suburb": "Quartiers / lieux-dits — Noto Sans Regular, inkSoft, halo bois.",
-      "place-city": "Villes / bourgs — Noto Sans Bold, ink, halo bois (lisibilité max).",
+      "place-city": "Villes / bourgs — Noto Sans Regular, ink, halo bois (lisibilité max). Bold désactivé : OpenFreeMap ne sert que Noto Sans Regular.",
       "road-label": "Noms de rues majeures uniquement (zoom ≥ 14) — Noto Sans Regular 10px, inkSoft, halo bois."
     }
   },
   "center": [3.8767, 43.611],
   "zoom": 13,
   "glyphs": "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf",
-  "sprite": null,
   "sources": {
     "openmaptiles": {
       "type": "vector",
@@ -249,7 +248,7 @@
       ],
       "layout": {
         "text-field": ["coalesce", ["get", "name:fr"], ["get", "name:latin"], ["get", "name"]],
-        "text-font": ["Noto Sans Bold"],
+        "text-font": ["Noto Sans Regular"],
         "text-size": [
           "interpolate", ["linear"], ["zoom"],
           6, 11,
