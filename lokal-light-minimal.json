@@ -44,7 +44,6 @@
   "center": [3.8767, 43.611],
   "zoom": 13,
   "glyphs": "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf",
-  "sprite": null,
   "sources": {
     "openmaptiles": {
       "type": "vector",
@@ -274,7 +273,7 @@
       ],
       "layout": {
         "text-field": ["coalesce", ["get", "name:fr"], ["get", "name:latin"], ["get", "name"]],
-        "text-font": ["Noto Sans Bold"],
+        "text-font": ["Noto Sans Regular"],
         "text-size": [
           "interpolate", ["linear"], ["zoom"],
           6, 11,
