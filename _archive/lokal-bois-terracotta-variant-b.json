@@ -1,0 +1,302 @@
+{
+  "version": 8,
+  "name": "Lokal — Light Minimal (variante B : Bois & terracotta — ARCHIVE rollback)",
+  "metadata": {
+    "lokal:variant": "B",
+    "lokal:variant-name": "Bois & terracotta",
+    "lokal:variant-status": "ARCHIVED — rollback fallback for variant C",
+    "lokal:source-tokens": "lokal-app/src/tokens.ts",
+    "lokal:decision-po": "2026-05-03",
+    "lokal:handoff": ".claude/handoff/maplibre-style-1c/index.html",
+    "lokal:rollback-runbook": ".claude/handoff/maplibre-style-1c/cloudflare-runbook.md",
+    "lokal:tiles-provider": "OpenFreeMap (free, no key, OpenMapTiles schema)",
+    "lokal:tiles-fallback-v1": "Protomaps self-host (basculer sources.openmaptiles.url uniquement)",
+    "lokal:perf-target": "1000 events @ 60fps Android low-end (cf. LOKAL-DEV-BRIEF.md §9)",
+    "lokal:palette": {
+      "background": "hsl(25, 30%, 90%) — colors.bois",
+      "water": "hsl(260, 50%, 95%) — colors.lilasSoft (eau lilas-soft, signature B)",
+      "landcover-wood": "hsl(150, 30%, 88%) — dérivé saugeSoft (forêts/bois)",
+      "landuse-park": "hsl(150, 35%, 92%) — colors.saugeSoft",
+      "landuse-residential": "hsl(25, 30%, 88%) — dérivé bois plus saturé (zones habitées)",
+      "road-minor": "hsl(11, 64%, 96%) — colors.terracotta50 (rues secondaires/services)",
+      "road-major": "hsl(11, 64%, 92%) — colors.terracotta100 (artères primary/secondary/tertiary)",
+      "road-highway": "hsl(11, 64%, 88%) — dérivé terracotta saturé (motorway/trunk, sans casing)",
+      "boundary-admin": "hsla(15, 8%, 62%, 0.4) — dérivé inkFaint α40% (limites admin level 4-6)",
+      "place-label-city": "hsl(15, 25%, 15%) — colors.ink + halo bois",
+      "place-label-suburb": "hsl(15, 10%, 45%) — colors.inkSoft + halo bois",
+      "road-label": "hsl(15, 10%, 45%) — colors.inkSoft (rues majeures, zoom ≥ 14) + halo bois"
+    },
+    "lokal:layers-doc": {
+      "bg": "Fond carte global — bois Lokal, plus chaud et plus terre que sableSoft (variante C).",
+      "landuse-residential": "Zones habitées — dérivé bois plus saturé pour différencier du fond sans le dominer.",
+      "landuse-park": "Parcs urbains — vert sauge soft, identité Lokal (catégorie marches/dehors).",
+      "landcover-wood": "Couvert forestier — sauge légèrement plus profond pour distinguer des parcs en zone péri-urbaine.",
+      "water": "Plans d'eau / cours d'eau — lilas-soft, choix poétique de la variante B (eau froide chaleureuse).",
+      "road-minor": "Rues mineures, services, pistes — terracotta très clair (50), hiérarchie basse mais identité chromatique forte.",
+      "road-major": "Artères primary/secondary/tertiary — terracotta clair (100), hiérarchie médiane.",
+      "road-highway": "Autoroutes motorway/trunk — terracotta saturé (88%), variante B SANS casing (1 layer en moins vs C).",
+      "boundary-admin": "Limites administratives 4 (département) et 6 (commune) — pointillé inkFaint α40%.",
+      "place-suburb": "Quartiers / lieux-dits — Noto Sans Regular, inkSoft, halo bois.",
+      "place-city": "Villes / bourgs — Noto Sans Bold, ink, halo bois (lisibilité max).",
+      "road-label": "Noms de rues majeures uniquement (zoom ≥ 14) — Noto Sans Regular 10px, inkSoft, halo bois."
+    }
+  },
+  "center": [3.8767, 43.611],
+  "zoom": 13,
+  "glyphs": "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf",
+  "sprite": null,
+  "sources": {
+    "openmaptiles": {
+      "type": "vector",
+      "url": "https://tiles.openfreemap.org/planet"
+    }
+  },
+  "layers": [
+    {
+      "id": "bg",
+      "type": "background",
+      "paint": {
+        "background-color": "hsl(25, 30%, 90%)"
+      }
+    },
+    {
+      "id": "landuse-residential",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "landuse",
+      "filter": ["==", ["get", "class"], "residential"],
+      "paint": {
+        "fill-color": "hsl(25, 30%, 88%)",
+        "fill-opacity": [
+          "interpolate", ["linear"], ["zoom"],
+          9, 0,
+          12, 1
+        ]
+      }
+    },
+    {
+      "id": "landuse-park",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "landuse",
+      "filter": ["==", ["get", "class"], "park"],
+      "paint": {
+        "fill-color": "hsl(150, 35%, 92%)",
+        "fill-opacity": 1
+      }
+    },
+    {
+      "id": "landcover-wood",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "filter": ["==", ["get", "class"], "wood"],
+      "paint": {
+        "fill-color": "hsl(150, 30%, 88%)",
+        "fill-opacity": 0.85
+      }
+    },
+    {
+      "id": "water",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "water",
+      "filter": ["!=", ["get", "intermittent"], 1],
+      "paint": {
+        "fill-color": "hsl(260, 50%, 95%)",
+        "fill-antialias": true
+      }
+    },
+    {
+      "id": "road-minor",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 13,
+      "filter": [
+        "in",
+        ["get", "class"],
+        ["literal", ["minor", "service", "track"]]
+      ],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "hsl(11, 64%, 96%)",
+        "line-width": [
+          "interpolate", ["linear"], ["zoom"],
+          13, 0.5,
+          15, 1.2,
+          18, 4
+        ]
+      }
+    },
+    {
+      "id": "road-major",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "filter": [
+        "in",
+        ["get", "class"],
+        ["literal", ["primary", "secondary", "tertiary"]]
+      ],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "hsl(11, 64%, 92%)",
+        "line-width": [
+          "interpolate", ["linear"], ["zoom"],
+          10, 0.5,
+          13, 1.5,
+          15, 3,
+          18, 8
+        ]
+      }
+    },
+    {
+      "id": "road-highway",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "filter": [
+        "in",
+        ["get", "class"],
+        ["literal", ["motorway", "trunk"]]
+      ],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "hsl(11, 64%, 88%)",
+        "line-width": [
+          "interpolate", ["linear"], ["zoom"],
+          6, 0.5,
+          10, 1.5,
+          14, 5,
+          18, 10
+        ]
+      }
+    },
+    {
+      "id": "boundary-admin",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "boundary",
+      "filter": [
+        "in",
+        ["get", "admin_level"],
+        ["literal", [4, 6]]
+      ],
+      "layout": {
+        "line-cap": "butt",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "hsla(15, 8%, 62%, 0.4)",
+        "line-dasharray": [3, 2],
+        "line-width": [
+          "interpolate", ["linear"], ["zoom"],
+          4, 0.4,
+          10, 0.8,
+          16, 1.4
+        ]
+      }
+    },
+    {
+      "id": "place-suburb",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "place",
+      "filter": [
+        "in",
+        ["get", "class"],
+        ["literal", ["suburb", "neighbourhood"]]
+      ],
+      "layout": {
+        "text-field": ["coalesce", ["get", "name:fr"], ["get", "name:latin"], ["get", "name"]],
+        "text-font": ["Noto Sans Regular"],
+        "text-size": [
+          "interpolate", ["linear"], ["zoom"],
+          12, 10,
+          16, 13
+        ],
+        "text-letter-spacing": 0.04,
+        "text-max-width": 8,
+        "text-padding": 4,
+        "text-anchor": "center"
+      },
+      "paint": {
+        "text-color": "hsl(15, 10%, 45%)",
+        "text-halo-color": "hsl(25, 30%, 90%)",
+        "text-halo-width": 1.2,
+        "text-halo-blur": 0.4
+      }
+    },
+    {
+      "id": "place-city",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "place",
+      "filter": [
+        "in",
+        ["get", "class"],
+        ["literal", ["city", "town"]]
+      ],
+      "layout": {
+        "text-field": ["coalesce", ["get", "name:fr"], ["get", "name:latin"], ["get", "name"]],
+        "text-font": ["Noto Sans Bold"],
+        "text-size": [
+          "interpolate", ["linear"], ["zoom"],
+          6, 11,
+          10, 14,
+          14, 18
+        ],
+        "text-letter-spacing": 0.06,
+        "text-transform": "uppercase",
+        "text-max-width": 8,
+        "text-padding": 6,
+        "text-anchor": "center"
+      },
+      "paint": {
+        "text-color": "hsl(15, 25%, 15%)",
+        "text-halo-color": "hsl(25, 30%, 90%)",
+        "text-halo-width": 1.6,
+        "text-halo-blur": 0.5
+      }
+    },
+    {
+      "id": "road-label",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "transportation_name",
+      "minzoom": 14,
+      "filter": [
+        "in",
+        ["get", "class"],
+        ["literal", ["primary", "secondary", "tertiary"]]
+      ],
+      "layout": {
+        "text-field": ["coalesce", ["get", "name:fr"], ["get", "name:latin"], ["get", "name"]],
+        "text-font": ["Noto Sans Regular"],
+        "text-size": 10,
+        "text-letter-spacing": 0.02,
+        "symbol-placement": "line",
+        "text-rotation-alignment": "map",
+        "text-pitch-alignment": "viewport",
+        "text-padding": 2,
+        "text-max-angle": 30
+      },
+      "paint": {
+        "text-color": "hsl(15, 10%, 45%)",
+        "text-halo-color": "hsl(25, 30%, 90%)",
+        "text-halo-width": 1.2,
+        "text-halo-blur": 0.3
+      }
+    }
+  ]
+}
